@@ -1,142 +1,147 @@
 import { createSlice, createAsyncThunk, createAction } from "@reduxjs/toolkit";
-import colorService from "./colorService";
-export const getColors = createAsyncThunk(
-  "color/get-colors",
+import couponService from "./couponService.";
+export const getAllCoupons = createAsyncThunk(
+  "coupon/get-coupons",
   async (thunkApi) => {
     try {
-      return await colorService.getColors();
+      return await couponService.getCoupons();
     } catch (error) {
       return thunkApi.rejectWithValue(error);
     }
   }
 );
-export const createColor = createAsyncThunk(
-  "color/create-color",
-  async (colorData, thunkApi) => {
+export const createCoupon = createAsyncThunk(
+  "coupon/create-coupon",
+  async (brandData, thunkApi) => {
     try {
-      return await colorService.createColor(colorData);
+      const response = await couponService.createCoupon(brandData);
+      console.log("data", JSON.stringify(response));
+      return response;
     } catch (error) {
       return thunkApi.rejectWithValue(error);
     }
   }
 );
-export const getAColor = createAsyncThunk(
-  "color/get-color",
+export const deleteACoupon = createAsyncThunk(
+  "coupon/delete-coupon",
   async (id, thunkAPI) => {
     try {
-      return await colorService.getColor(id);
+      return await couponService.deleteCoupon(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
-export const updateAColor = createAsyncThunk(
-  "color/update-color",
-  async (color, thunkAPI) => {
-    try {
-      return await colorService.updateColor(color);
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error);
-    }
-  }
-);
-
-export const deleteAColor = createAsyncThunk(
-  "color/delete-color",
+export const getACoupon = createAsyncThunk(
+  "coupon/get-coupon",
   async (id, thunkAPI) => {
     try {
-      return await colorService.deleteColor(id);
+      return await couponService.getCoupon(id);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
   }
 );
-
+export const updateACoupon = createAsyncThunk(
+  "color/update-coupon",
+  async (coupon, thunkAPI) => {
+    try {
+      return await couponService.updateCoupon(coupon);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
 export const resetState = createAction("Reset_all");
 
 const initialState = {
-  colors: [],
+  coupons: [],
   isError: false,
   isLoading: false,
   isSuccess: false,
   message: "",
 };
-export const colorSlice = createSlice({
-  name: "colors",
+export const couponSlice = createSlice({
+  name: "coupons",
   initialState,
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(getColors.pending, (state) => {
+      .addCase(getAllCoupons.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getColors.fulfilled, (state, action) => {
+      .addCase(getAllCoupons.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.colors = action.payload;
+        state.coupons = action.payload;
       })
-      .addCase(getColors.rejected, (state, action) => {
+      .addCase(getAllCoupons.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
       })
-      .addCase(createColor.pending, (state) => {
+      .addCase(createCoupon.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(createColor.fulfilled, (state, action) => {
+      .addCase(createCoupon.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.createdColor= action.payload;
+        state.CreatedCoupon = action;
       })
-      .addCase(createColor.rejected, (state, action) => {
+      .addCase(createCoupon.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
       })
-      .addCase(updateAColor.pending, (state) => {
+      .addCase(deleteACoupon.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateAColor.fulfilled, (state, action) => {
+      .addCase(deleteACoupon.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.updatedColor = action.payload;
+        state.deletedCoupon = action.payload;
       })
-      .addCase(updateAColor.rejected, (state, action) => {
+      .addCase(deleteACoupon.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
       })
-      .addCase(getAColor.pending, (state) => {
+      .addCase(getACoupon.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getAColor.fulfilled, (state, action) => {
+      .addCase(getACoupon.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.colorName = action.payload.title;
+        state.couponName = action.payload.name;
+        state.couponDiscount = action.payload.discount;
+        state.couponExpiry = action.payload.expiry;
       })
-      .addCase(getAColor.rejected, (state, action) => {
+      .addCase(getACoupon.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
       })
-      .addCase(deleteAColor.pending, (state) => {
+      .addCase(updateACoupon.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(deleteAColor.fulfilled, (state, action) => {
+      .addCase(updateACoupon.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
         state.isSuccess = true;
-        state.deletedColor = action.payload.title;
+        state.couponName = action.payload.name;
+        state.updatedCoupon = action.payload.name;
+        state.couponDiscount = action.payload.discount;
+        state.couponExpiry = action.payload.expiry;
       })
-      .addCase(deleteAColor.rejected, (state, action) => {
+      .addCase(updateACoupon.rejected, (state, action) => {
         state.isLoading = false;
         state.isError = true;
         state.isSuccess = false;
@@ -146,4 +151,4 @@ export const colorSlice = createSlice({
   },
 });
 
-export default colorSlice.reducer;
+export default couponSlice.reducer;

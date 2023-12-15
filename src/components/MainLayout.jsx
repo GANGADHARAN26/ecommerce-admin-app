@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { RiCouponLine } from "react-icons/ri";
 import {
   AiOutlineDashboard,
   AiOutlineShoppingCart,
@@ -7,6 +8,8 @@ import {
   AiOutlinePicRight,
   AiOutlinePicLeft,
 } from "react-icons/ai";
+import { ToastContainer} from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import { IoIosNotifications } from "react-icons/io";
 import { ImBlog } from "react-icons/im";
 import { FaClipboardList } from "react-icons/fa";
@@ -23,7 +26,7 @@ const MainLayout = () => {
   } = theme.useToken();
   const navigate = useNavigate();
   return (
-    <Layout>
+    <Layout  /*onContextMenu={(e)=>e.preventDefault()}*/ >
       <Sider trigger={null} collapsible collapsed={collapsed}>
         <div className="logo">
           <h2 className="text-white fs-4 text-center py-3 mb-0">
@@ -103,6 +106,23 @@ const MainLayout = () => {
               key: "orders",
               icon: <FaClipboardList className="fs-4" />,
               label: "Orders",
+            },
+            {
+              key: "marketing",
+              icon: <RiCouponLine className="fs-4" />,
+              label: "Marketing",
+              children: [
+                {
+                  key: "coupon",
+                  icon: <ImBlog className="fs-4" />,
+                  label: "Add Coupon ",
+                },
+                {
+                  key: "coupon-list",
+                  icon: <RiCouponLine className="fs-4" />,
+                  label: "Coupon  List",
+                },
+              ],
             },
             {
               key: "blogs",
@@ -208,6 +228,18 @@ const MainLayout = () => {
             background: colorBgContainer,
           }}
         >
+          <ToastContainer
+          position="top-right"
+          autoClose={250}
+          hideProgressBar={false}
+          newestOnTop={true}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+          />
           <Outlet />
         </Content>
       </Layout>

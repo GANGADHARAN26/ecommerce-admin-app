@@ -3,8 +3,9 @@ import { Link } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useEffect } from "react";
-import { getBlogs } from "../features/blogs/blogSlice";
+import { useEffect, useState } from "react";
+import { deleteABlog, getBlogs, resetState } from "../features/blogs/blogSlice";
+import CustomModal from "../components/CustomModel";
 const columns = [
   {
     title: "SNo",
@@ -25,10 +26,21 @@ const columns = [
 ];
 
 const Bloglist = () => {
+  const [open, setOpen] = useState(false);
+  const [blogId, setblogId] = useState("");
+  const showModal = (e) => {
+    setOpen(true);
+    setblogId(e);
+  };
+
+  const hideModal = () => {
+    setOpen(false);
+  };
  const dispatch=useDispatch();
- useEffect(()=>{
+ useEffect(() => {
+  dispatch(resetState());
   dispatch(getBlogs());
- },[])
+}, []);
  const getBlogState=useSelector((state)=>state.blogs.blogs)
  const data1 = [];
 for (let i = 0; i < getBlogState.length; i++) {
@@ -38,22 +50,41 @@ for (let i = 0; i < getBlogState.length; i++) {
     category:getBlogState[i].category,
     action: (
       <>
-       <Link to='/' className="fs-5 text-danger">
+       <Link  to={`/admin/blog/${getBlogState[i].id}`} className="fs-5 text-danger">
          <FiEdit />
        </Link>
-       <Link to='/' className="ms-3 fs-5 text-danger">
+       <button
+            className="ms-3 fs-3 text-danger bg-transparent border-0"
+            onClick={() => showModal(getBlogState[i]._id)}
+          >
        <RiDeleteBinLine />
-       </Link>
+       </button>
       </>
      ),
   });
 }
+const deleteBlog = (e) => {
+  dispatch(deleteABlog(e));
+
+  setOpen(false);
+  setTimeout(() => {
+    dispatch(getBlogs());
+  }, 100);
+};
   return (
     <div>
       <h3 className="mb-4 title">Blogs List</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
+      <CustomModal
+        hideModal={hideModal}
+        open={open}
+        performAction={() => {
+          deleteBlog(blogId);
+        }}
+        title="Are you sure you want to delete this blog?"
+      />
     </div>
   );
 };

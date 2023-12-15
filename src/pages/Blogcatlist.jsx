@@ -3,8 +3,13 @@ import { Link } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { useDispatch, useSelector } from "react-redux";
 import { RiDeleteBinLine } from "react-icons/ri";
-import { useEffect } from "react";
-import { getCategories } from "../features/bcategory/bcategorySlice";
+import { useEffect, useState } from "react";
+import {
+  deleteABlogCat,
+  getCategories,
+  resetState,
+} from "../features/bcategory/bcategorySlice";
+import CustomModal from "../components/CustomModel";
 
 const columns = [
   {
@@ -14,7 +19,7 @@ const columns = [
   {
     title: "Name",
     dataIndex: "name",
-    sorter: (a, b) => a.name.length - b.name.length ,
+    sorter: (a, b) => a.name.length - b.name.length,
   },
   {
     title: "Action",
@@ -22,36 +27,67 @@ const columns = [
   },
 ];
 
-
 const Blogcatlist = () => {
-  const dispatch=useDispatch();
-  useEffect(()=>{
+  const [open, setOpen] = useState(false);
+  const [blogCatId, setblogCatId] = useState("");
+  const showModal = (e) => {
+    setOpen(true);
+    setblogCatId(e);
+  };
+
+  const hideModal = () => {
+    setOpen(false);
+  };
+  const dispatch = useDispatch();
+  useEffect(() => {
+    dispatch(resetState());
     dispatch(getCategories());
-  },[])
-  const bCatStat=useSelector((state)=>state.bCategory.bCategories)
+  }, []);
+  const bCatState = useSelector((state) => state.bCategory.bCategories);
   const data1 = [];
-for (let i = 0; i < bCatStat.length; i++) {
-  data1.push({
-    key: i+1,
-    name: bCatStat[i].title,
-    action: (
-      <>
-       <Link to='/' className="fs-5 text-danger">
-         <FiEdit />
-       </Link>
-       <Link to='/' className="ms-3 fs-5 text-danger">
-       <RiDeleteBinLine />
-       </Link>
-      </>
-     ),
-  });
-}
+  for (let i = 0; i < bCatState.length; i++) {
+    data1.push({
+      key: i + 1,
+      name: bCatState[i].title,
+      action: (
+        <>
+          <Link
+            to={`/admin/blog-category/${bCatState[i]._id}`}
+            className="fs-5 text-danger"
+          >
+            <FiEdit />
+          </Link>
+          <button
+            className="ms-3 fs-3 text-danger bg-transparent border-0"
+            onClick={() => showModal(bCatState[i]._id)}
+          >
+            <RiDeleteBinLine />
+          </button>
+        </>
+      ),
+    });
+  }
+  const deleteBlogCategory = (e) => {
+    dispatch(deleteABlogCat(e));
+    setOpen(false);
+    setTimeout(() => {
+      dispatch(getCategories());
+    }, 1000);
+  };
   return (
     <div>
       <h3 className="mb-4 title">Blog Categories</h3>
       <div>
         <Table columns={columns} dataSource={data1} />
       </div>
+      <CustomModal
+        hideModal={hideModal}
+        open={open}
+        performAction={() => {
+          deleteBlogCategory(blogCatId);
+        }}
+        title="Are you sure you want to delete this blog category?"
+      />
     </div>
   );
 };
