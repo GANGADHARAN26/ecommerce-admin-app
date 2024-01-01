@@ -1,6 +1,6 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import authService from "./authService";
-const getUserfromLocalStorage = localStorage.getItem("user")
+const getUserfromLocalStorage = localStorage.getItem("admin")
   ? JSON.parse(localStorage.getItem("user"))
   : null;
 const initialState = {
@@ -21,6 +21,26 @@ export const login = createAsyncThunk(
     }
   }
 );
+export const getMonthlyData = createAsyncThunk(
+  "order/monthlydata",
+  async ( thunkApi) => {
+    try {
+      return await authService.getMonthlyOrders();
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
+export const getYearlyData = createAsyncThunk(
+  "order/yearlydata",
+  async ( thunkApi) => {
+    try {
+      return await authService.getYearlyStats();
+    } catch (error) {
+      return thunkApi.rejectWithValue(error);
+    }
+  }
+);
 export const getOrders = createAsyncThunk(
   "order/get-orders",
   async (thunkApi) => {
@@ -31,11 +51,22 @@ export const getOrders = createAsyncThunk(
     }
   }
 );
-export const getOrderByUser = createAsyncThunk(
+
+export const getOrder = createAsyncThunk(
   "order/get-order",
   async (id, thunkAPI) => {
     try {
       return await authService.getOrder(id);
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error);
+    }
+  }
+);
+export const updateOrder = createAsyncThunk(
+  "order/update-order",
+  async (data, thunkAPI) => {
+    try {
+      return await authService.updateOrder(data);
     } catch (error) {
       return thunkAPI.rejectWithValue(error);
     }
@@ -54,6 +85,7 @@ export const authSlice = createSlice({
         state.isLoading = false;
         state.isSuccess = true;
         state.user = action.payload;
+        
       })
       .addCase(login.rejected, (state, action) => {
         state.isLoading = false;
@@ -78,22 +110,71 @@ export const authSlice = createSlice({
         state.message=action.error;
         state.isLoading=false;
       })
-      .addCase(getOrderByUser.pending, (state) => {
+      .addCase(getOrder.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(getOrderByUser.fulfilled, (state, action) => {
+      .addCase(getOrder.fulfilled, (state, action) => {
         state.isError = false;
         state.isLoading = false;
         state.isSuccess = true;
-        state.orderbyuser = action.payload;
+        state.singleOrder = action.payload;
         state.message = "success";
       })
-      .addCase(getOrderByUser.rejected, (state, action) => {
+      .addCase(getOrder.rejected, (state, action) => {
         state.isError = true;
         state.isSuccess = false;
         state.message = action.error;
         state.isLoading = false;
-      });
+      })
+      .addCase(getMonthlyData.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getMonthlyData.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.monthlyData= action.payload;
+        state.message = "success";
+      })
+      .addCase(getMonthlyData.rejected, (state, action) => {
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        state.isLoading = false;
+      })
+      .addCase(getYearlyData.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(getYearlyData.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.yearlyData= action.payload;
+        state.message = "success";
+      })
+      .addCase(getYearlyData.rejected, (state, action) => {
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        state.isLoading = false;
+      })
+      .addCase(updateOrder.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateOrder.fulfilled, (state, action) => {
+        state.isError = false;
+        state.isLoading = false;
+        state.isSuccess = true;
+        state.updatedOrder= action.payload;
+        state.message = "success";
+      })
+      .addCase(updateOrder.rejected, (state, action) => {
+        state.isError = true;
+        state.isSuccess = false;
+        state.message = action.error;
+        state.isLoading = false;
+      })
+      ;
   },
 });
 export default authSlice.reducer;

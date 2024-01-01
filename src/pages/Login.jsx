@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import {  useNavigate } from "react-router-dom";
 import CustomInput from "../components/CustomInput";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -23,7 +23,6 @@ const Login = () => {
     validationSchema: schema,
     onSubmit: (values) => {
       dispatch(login(values));
-      alert(JSON.stringify(values, null, 2));
     },
   });
   const { user, isLoading, isSuccess, message } = useSelector(
@@ -33,7 +32,6 @@ const Login = () => {
   useEffect(() => {
     if (!user==null || isSuccess) {
       navigate("admin");
-      console.log('success',user);
     }
     else{
             navigate("")
@@ -42,7 +40,7 @@ const Login = () => {
   return (
     <div className="py-5" style={{ background: "#ffd333", minHeight: "100vh" }}>
       <br />
-      <br />
+      <br />  
       <div className="my-5 w-25 bg-white rounded-3 mx-auto p-4">
         <h3 title>Login</h3>
         <p>Login to your account to continue</p>
@@ -72,9 +70,6 @@ const Login = () => {
             {formik.touched.password && formik.errors.password ? (
               <div>{formik.errors.password}</div>
             ) : null}
-          </div>
-          <div className="my-3 text-end">
-            <Link to="forgot-password">Forgot Password?</Link>
           </div>
           <button
             className="border-0 px-3 py-2 text-white fw-bold w-100 text-center text-decoration-none fs-5"

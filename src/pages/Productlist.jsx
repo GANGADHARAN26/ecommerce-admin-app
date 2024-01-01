@@ -7,6 +7,7 @@ import { getProducts } from "../features/product/productSlice";
 import { Link } from "react-router-dom";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBinLine } from "react-icons/ri";
+import { resetState } from './../features/product/productSlice';
 const columns = [
   {
     title: "SNo",
@@ -42,8 +43,10 @@ const columns = [
   },
 ];
 const Productlist = () => {
+  
   const dispatch = useDispatch();
   useEffect(() => {
+    dispatch(resetState())
     dispatch(getProducts());
   }, []);
   const productState = useSelector((state) => state.product.products);
@@ -58,9 +61,9 @@ const Productlist = () => {
       price: `${productState[i].price}`,
       action: (
        <>
-        <Link to='/' className="fs-5 text-danger">
-          <FiEdit />
-        </Link>
+        {/* <Link to='/' className="fs-5 text-danger"> */}
+          {/* <FiEdit /> */}
+        {/* </Link> */}
         <Link to='/' className="ms-3 fs-5 text-danger">
         <RiDeleteBinLine />
         </Link>

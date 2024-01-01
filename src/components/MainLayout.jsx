@@ -17,7 +17,8 @@ import { BiCategoryAlt } from "react-icons/bi";
 import { FaBloggerB } from "react-icons/fa6";
 import { SiBrandfolder } from "react-icons/si";
 import { Layout, Menu, Button, theme } from "antd";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Link, Outlet, useNavigate } from "react-router-dom"
+import { CiLogout } from "react-icons/ci";
 const { Header, Sider, Content } = Layout;
 const MainLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -25,6 +26,10 @@ const MainLayout = () => {
     token: { colorBgContainer },
   } = theme.useToken();
   const navigate = useNavigate();
+  const handleSingOut=()=>{
+    localStorage.clear();
+    window.location.reload();
+  }
   return (
     <Layout  /*onContextMenu={(e)=>e.preventDefault()}*/ >
       <Sider trigger={null} collapsible collapsed={collapsed}>
@@ -39,7 +44,8 @@ const MainLayout = () => {
           mode="inline"
           defaultSelectedKeys={[""]}
           onClick={({ key }) => {
-            if (key == "signout") {
+            if (key ==="signout") {
+             handleSingOut();
             } else {
               navigate(key);
             }
@@ -156,6 +162,11 @@ const MainLayout = () => {
               icon: <FaClipboardList className="fs-4" />,
               label: "Enquiries",
             },
+            {
+              key: "signout",
+              icon: <CiLogout className="fs-4" />,
+              label: "Sign Out",
+            },
           ]}
         />
       </Sider>
@@ -212,9 +223,9 @@ const MainLayout = () => {
                     </Link>
                   </li>
                   <li>
-                    <Link className="dropdown-item py-1 mb-1" to="/" style={{height:'auto',lineHeight:'20px'}}>
+                    <button className="dropdown-item py-1 mb-1" to="/" onClick={handleSingOut} style={{height:'auto',lineHeight:'20px'}}>
                       Signout
-                    </Link>
+                    </button>
                   </li>
                 </div>
             </div>
