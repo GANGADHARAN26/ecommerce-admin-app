@@ -1,1 +1,1 @@
-export const base_url='https://curious-chimera-d907ab.netlify.app/api/';
+export const base_url='https://ecommerce-backend-yp85.onrender.com/api/';
