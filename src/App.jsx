@@ -19,7 +19,7 @@ import Addcolor from './pages/Addcolor';
 import Addcat from './pages/Addcat';
 import Addbrand from './pages/Addbrand';
 import Addproduct from './pages/Addproduct';
-import Couponlist from './pages/couponlist';
+import Couponlist from './pages/Couponlist';
 import AddCoupon from './pages/AddCoupon';
 import ViewEnq from './pages/ViewEnq';
 import ViewOrder from './pages/ViewOrder';
