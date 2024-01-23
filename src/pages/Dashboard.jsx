@@ -45,12 +45,11 @@ const Dashboard = () => {
   const [dataMonthlySales, setDataMonthlySales] = useState([]);
   const [orderData,setOrderData] = useState([]);
   useEffect(() => {
-    setTimeout(() => {
       dispatch(getMonthlyData());
       dispatch(getYearlyData());
       dispatch(getOrders());
-    }, 3000);
   }, []);
+
   useEffect(() => {
     let monthNames = [
       "January",
